@@ -1,0 +1,20 @@
+name: 'Build firmware'
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build-firmware:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: esphome/build-action@v1
+        id: esphome-build
+        with:
+          yaml_file: app.yaml
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ESP32-POE-${{ steps.esphome-build.outputs.name }}
+          path: ${{ steps.esphome-build.outputs.name }}

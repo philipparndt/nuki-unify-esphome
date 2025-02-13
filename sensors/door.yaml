@@ -1,0 +1,55 @@
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO14
+      inverted: true
+      mode: INPUT_PULLUP
+    name: front_door
+    id: front_door
+    internal: true
+    filters:
+      # initially tried with delayed_off,
+      # but it did open the door one time unexpectedly
+      - delayed_on: 100ms
+    on_press:
+      - lambda: |-
+          if (id(device_uptime).state > 2) {
+            ESP_LOGD("main", "Button pressed after 2 seconds of uptime.");
+            id(door_nuki_publish_open).trigger();
+            id(door_publish_open).trigger();
+          } else {
+            ESP_LOGW("main", "Button pressed before 2 seconds of uptime. Not sending message.");
+          }
+
+    on_release:
+      - lambda: |-
+          if (id(device_uptime).state > 2) {
+            ESP_LOGD("main", "Button released after 2 seconds of uptime.");
+            id(door_nuki_publish_closed).trigger();
+            id(door_publish_closed).trigger();
+          } else {
+            ESP_LOGW("main", "Button released before 2 seconds of uptime. Not sending message.");
+          }
+script:
+#  - id: door_publish_open
+#    then:
+#      - mqtt.publish:
+#          topic: "${base_topic}/door"
+#          payload: '{"message": "open", "button_id": "door"}'
+  - id: door_nuki_publish_open
+    then:
+      - mqtt.publish:
+          #topic: !secret NUKI_TOPIC
+          topic: "_debug/nuki/1/lockAction"
+          payload: '3'
+#  - id: door_publish_closed
+#    then:
+#      - mqtt.publish:
+#          topic: "${base_topic}/door"
+#          payload: '{"message": "close", "button_id": "door"}'
+  - id: door_nuki_publish_closed
+    then:
+      - mqtt.publish:
+          #topic: !secret NUKI_TOPIC
+          topic: "_debug/nuki/1/lockAction"
+          payload: '1'

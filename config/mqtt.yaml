@@ -1,0 +1,7 @@
+mqtt:
+  broker: 192.168.18.22
+  port: 1883
+  username: !secret MQTT_USERNAME
+  password: !secret MQTT_PASSWORD
+  topic_prefix: ${base_topic}
+  keepalive: 60s

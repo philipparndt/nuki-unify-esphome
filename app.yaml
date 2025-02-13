@@ -1,0 +1,47 @@
+substitutions:
+  temperature_update_time: 5s
+  publish_wind_interval: 5s
+  publish_temperature_interval: 60s
+  device_name: "unifi_nuki"
+  appversion: "1.0.0"
+  base_topic: "haus"
+
+esphome:
+  name: ${device_name}
+  platform: ESP32
+  board: esp32-poe-iso
+
+globals:
+  - id: current_screen
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+packages:
+  mqtt:     !include config/mqtt.yaml
+  ethernet: !include config/ethernet.yaml
+
+# Enable logging
+logger:
+  #level: WARN
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  password: !secret API_PASSWORD
+
+ota:
+  password: !secret OTA_PASSWORD
+
+web_server:
+  port: 80
+
+# Individual sensors
+sensor:
+  - platform: uptime
+    name: "Device Uptime"
+    id: device_uptime
+    update_interval: 2s  # Check every 5 seconds
+    internal: true
+
+<<: !include sensors/door.yaml
