@@ -16,7 +16,6 @@ binary_sensor:
           if (id(device_uptime).state > 2) {
             ESP_LOGD("main", "Button pressed after 2 seconds of uptime.");
             id(door_nuki_publish_open).trigger();
-            id(door_publish_open).trigger();
           } else {
             ESP_LOGW("main", "Button pressed before 2 seconds of uptime. Not sending message.");
           }
@@ -26,7 +25,6 @@ binary_sensor:
           if (id(device_uptime).state > 2) {
             ESP_LOGD("main", "Button released after 2 seconds of uptime.");
             id(door_nuki_publish_closed).trigger();
-            id(door_publish_closed).trigger();
           } else {
             ESP_LOGW("main", "Button released before 2 seconds of uptime. Not sending message.");
           }
