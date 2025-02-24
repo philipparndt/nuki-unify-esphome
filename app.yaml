@@ -6,8 +6,6 @@ substitutions:
   appversion: "1.0.0"
   base_topic: "haus"
 
-#<<: !include ./secrets.yaml
-
 esphome:
   name: ${device_name}
   platform: ESP32
